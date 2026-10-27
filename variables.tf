@@ -24,6 +24,16 @@ variable "environment" {
   }
 }
 
+variable "cost_center" {
+  description = "The cost center the environment's resources are charged to, e.g. cc-4100."
+  type        = string
+
+  validation {
+    condition     = can(regex("^cc-[0-9]{4}$", var.cost_center))
+    error_message = "cost_center must be cc- followed by four digits, e.g. cc-4100."
+  }
+}
+
 variable "service_name" {
   description = "The service's name; it prefixes every resource's name."
   type        = string

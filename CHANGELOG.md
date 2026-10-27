@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The image repository, the data bucket and the Cloud Run service carry the standard labels: `team`, `environment`, `managed-by` and `cost-center`.
+- New variable `cost_center`, validated as `cc-` followed by four digits; set to `cc-4100` for dev and `cc-4200` for prod.
+
 ## 0.3.0
 
 - The data bucket deletes object versions beyond the newest five.
