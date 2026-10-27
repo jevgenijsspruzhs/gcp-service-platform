@@ -3,11 +3,21 @@ locals {
   image = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images.repository_id}/${var.service_name}:${var.image_tag}"
 }
 
+locals {
+  standard_labels = {
+    team        = "inventory"
+    environment = var.environment
+    managed-by  = "terraform"
+    cost-center = var.cost_center
+  }
+}
+
 resource "google_artifact_registry_repository" "images" {
   location      = var.region
   repository_id = local.name
   description   = "Container images of ${local.name}."
   format        = "DOCKER"
+  labels        = local.standard_labels
 }
 
 resource "google_storage_bucket" "data" {
@@ -17,6 +27,7 @@ resource "google_storage_bucket" "data" {
   uniform_bucket_level_access = true
   public_access_prevention    = "enforced"
   force_destroy               = false
+  labels                      = local.standard_labels
 
   versioning {
     enabled = true
@@ -62,6 +73,7 @@ resource "google_cloud_run_v2_service" "api" {
   name     = local.name
   location = var.region
   ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  labels   = local.standard_labels
 
   template {
     service_account = module.runtime_identity.email
